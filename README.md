@@ -1,6 +1,6 @@
 # 🔐 Vigenère Cipher Tool
 
-![Demo](asset/demo.gif) *(Upload a short demo GIF showing the app in action)*
+![Demo](asset/demo.gif)
 
 A cyberpunk-themed web application for encrypting and decrypting messages using the classic Vigenère cipher algorithm. Features a React frontend with futuristic styling and Python/Flask backend.
 
