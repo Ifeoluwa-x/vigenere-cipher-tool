@@ -1,6 +1,6 @@
 # 🔐 Vigenère Cipher Tool
 
-![Demo](demo.gif) *(Upload a short demo GIF showing the app in action)*
+![Demo](asset/demo.gif) *(Upload a short demo GIF showing the app in action)*
 
 A cyberpunk-themed web application for encrypting and decrypting messages using the classic Vigenère cipher algorithm. Features a React frontend with futuristic styling and Python/Flask backend.
 
@@ -25,15 +25,15 @@ A cyberpunk-themed web application for encrypting and decrypting messages using 
 
 ## 🚀 Deployment
 
-[![Netlify](https://img.shields.io/badge/Frontend-Netlify-00C7B7)](https://your-netlify-url.netlify.app)
-[![Render](https://img.shields.io/badge/Backend-Render-46E3B7)](https://your-render-url.onrender.com)
+[![Netlify](https://img.shields.io/badge/Frontend-Netlify-00C7B7)](https://vigenere-cipher-tool.netlify.app/)
+[![Render](https://img.shields.io/badge/Backend-Render-46E3B7)](https://vigenere-cipher-tool.onrender.com)
 
 
 ## 📦 Installation
 
 1. **Clone repository**
 ```bash
-git clone https://github.com/your-username/vigenere-cipher-tool.git
+git clone https://github.com/ifeoluwa-x/vigenere-cipher-tool.git
 cd vigenere-cipher-tool
 ```
 
