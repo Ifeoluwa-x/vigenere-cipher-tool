@@ -38,7 +38,7 @@ const VigenereCipher = () => {
 
     try {
       const endpoint = mode === 'encrypt' ? '/encrypt' : '/decrypt';
-      const response = await fetch(`http://localhost:5000${endpoint}`, {
+      const response = await fetch(`https://vigenere-cipher-tool.onrender.com${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
