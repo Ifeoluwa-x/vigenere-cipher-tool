@@ -13,9 +13,13 @@
     "typeface-share-tech-mono": "^1.1.13",
     "web-vitals": "^2.1.4"
   },
+  "engines": {
+  "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "install": "npm install --legacy-peer-deps",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
