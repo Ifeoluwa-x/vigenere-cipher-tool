@@ -278,8 +278,6 @@ h1::after {
   text-align: center;
 }
 
-/* Previous styles remain the same, add these new styles */
-
 .mode-toggle {
   display: flex;
   justify-content: center;
@@ -386,5 +384,3 @@ h1::after {
   border-left: 3px solid var(--neon-pink);
   font-family: var(--cyber-font);
 }
-
-/* Keep all previous CSS rules from earlier version */
