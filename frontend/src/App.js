@@ -17,10 +17,7 @@ const VigenereCipher = () => {
     if (isLoading) {
       interval = setInterval(() => {
         setProgress(prev => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            return 100;
-          }
+          if (prev >= 95) return prev; // stop near-complete
           return prev + Math.floor(Math.random() * 10) + 5;
         });
       }, 200);
@@ -58,7 +55,7 @@ const VigenereCipher = () => {
         setDecrypted(data.decrypted_message);
         setEncrypted('');
       }
-      
+
       const endTime = new Date();
       setProcessTime({
         start: startTime.toLocaleString(),
@@ -68,25 +65,25 @@ const VigenereCipher = () => {
     } catch (err) {
       setError(err.message);
     } finally {
+      setProgress(100); // instantly finish
       setIsLoading(false);
     }
   };
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text)
-      .then(() => {
-        alert('Copied to clipboard!');
-      })
-      .catch(err => {
-        console.error('Failed to copy: ', err);
-      });
+      .then(() => alert('Copied to clipboard!'))
+      .catch(err => console.error('Failed to copy: ', err));
   };
 
-  const toggleMode = () => {
-    setMode(mode === 'encrypt' ? 'decrypt' : 'encrypt');
+  const toggleMode = (newMode) => {
+    setMode(newMode);
+    setMessage('');
     setEncrypted('');
     setDecrypted('');
     setError('');
+    setProgress(0);
+    setProcessTime(null);
   };
 
   return (
@@ -98,31 +95,31 @@ const VigenereCipher = () => {
           <div className="dot dot-yellow"></div>
           <div className="dot dot-green"></div>
         </div>
-        <div>VIGENÈRE TERMINAL v3.56.0</div>
+        <div>VIGENÈRE TERMINAL v3.56.31</div>
         <div className="terminal-dots" style={{ visibility: 'hidden' }}>
           <div className="dot"></div>
           <div className="dot"></div>
           <div className="dot"></div>
         </div>
       </div>
-      
+
       <h1>NEON VIGENÈRE {mode.toUpperCase()}</h1>
-      
+
       <div className="mode-toggle">
         <button 
-          onClick={toggleMode}
+          onClick={() => toggleMode('encrypt')}
           className={`toggle-btn ${mode === 'encrypt' ? 'active' : ''}`}
         >
           ENCRYPT
         </button>
         <button 
-          onClick={toggleMode}
+          onClick={() => toggleMode('decrypt')}
           className={`toggle-btn ${mode === 'decrypt' ? 'active' : ''}`}
         >
           DECRYPT
         </button>
       </div>
-      
+
       <form onSubmit={handleSubmit}>
         <div className="input-group">
           <label htmlFor="message">
@@ -146,10 +143,10 @@ const VigenereCipher = () => {
             value={key}
             onChange={(e) => setKey(e.target.value)}
             required 
-            placeholder="Enter your encryption key (letters and numbers only)"
+            placeholder="Enter your encryption key (any printable characters)"
           />
         </div>
-        
+
         {isLoading && (
           <div className="progress-container">
             <div className="progress-bar" style={{ width: `${progress}%` }}>
@@ -157,20 +154,20 @@ const VigenereCipher = () => {
             </div>
           </div>
         )}
-        
+
         <button type="submit" className="cyber-button" disabled={isLoading}>
           {isLoading 
             ? `${mode === 'encrypt' ? 'ENCRYPTING' : 'DECRYPTING'}...` 
             : `INITIATE ${mode === 'encrypt' ? 'ENCRYPTION' : 'DECRYPTION'} SEQUENCE`}
         </button>
       </form>
-      
+
       {error && <div className="error-message">{error}</div>}
-      
+
       {(encrypted || decrypted) && (
         <div id="result">
           <h3>{mode === 'encrypt' ? 'ENCRYPTION COMPLETE:' : 'DECRYPTION COMPLETE:'}</h3>
-          
+
           <div className="process-info">
             <p><strong>Original Length:</strong> {message.length} characters</p>
             <p><strong>Key Length:</strong> {key.length} characters</p>
@@ -182,12 +179,12 @@ const VigenereCipher = () => {
               </>
             )}
           </div>
-          
+
           <div className="warning-message">
             <span className="warning-icon">⚠️</span>
             WARNING: Without the exact key, this message cannot be {mode === 'encrypt' ? 'decrypted' : 'verified'}!
           </div>
-          
+
           <div className="output-container">
             <p className="output-label">
               {mode === 'encrypt' ? 'ENCRYPTED MESSAGE:' : 'DECRYPTED MESSAGE:'}

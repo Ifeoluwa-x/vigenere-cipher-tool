@@ -1,54 +1,59 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from datetime import datetime
+import string
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)
+
+# Define our full character set (95 printable ASCII characters)
+ascii_chars = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
 
 def generate_vigenere_table():
-    ascii_chars = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     return [ascii_chars[i:] + ascii_chars[:i] for i in range(len(ascii_chars))]
 
 def vigenere_encrypt(message, key):
-    ascii_chars = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     table = generate_vigenere_table()
-    encrypted_message = ""
+    encrypted_message = []
     key_index = 0
-
+    
     for char in message:
         if char in ascii_chars:
+            # Find positions in our character set
             msg_idx = ascii_chars.index(char)
             key_char = key[key_index % len(key)]
             key_idx = ascii_chars.index(key_char)
-            encrypted_message += table[key_idx][msg_idx]
+            # Get encrypted character
+            encrypted_char = table[key_idx][msg_idx]
+            encrypted_message.append(encrypted_char)
             key_index += 1
         else:
-            encrypted_message += char  # leave non-ASCII chars unchanged
-
-    return encrypted_message
+            # Leave unknown characters as-is
+            encrypted_message.append(char)
+    
+    return ''.join(encrypted_message)
 
 def vigenere_decrypt(encrypted_message, key):
-    ascii_chars = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     table = generate_vigenere_table()
-    decrypted_message = ""
+    decrypted_message = []
     key_index = 0
-
+    
     for char in encrypted_message:
         if char in ascii_chars:
             key_char = key[key_index % len(key)]
             key_idx = ascii_chars.index(key_char)
             row = table[key_idx]
             msg_idx = row.index(char)
-            decrypted_message += ascii_chars[msg_idx]
+            decrypted_char = ascii_chars[msg_idx]
+            decrypted_message.append(decrypted_char)
             key_index += 1
         else:
-            decrypted_message += char  # leave non-ASCII chars unchanged
-
-    return decrypted_message
+            decrypted_message.append(char)
+    
+    return ''.join(decrypted_message)
 
 @app.route('/encrypt', methods=['POST'])
 def encrypt():
-    start_time = datetime.now()
     data = request.get_json()
     message = data.get('message', '')
     key = data.get('key', '')
@@ -56,12 +61,11 @@ def encrypt():
     if not message or not key:
         return jsonify({'error': 'Message and key cannot be empty'}), 400
     
-    # Check for invalid key characters
-    ascii_chars = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    # Validate key characters
     invalid_chars = [c for c in key if c not in ascii_chars]
     if invalid_chars:
         return jsonify({
-            'error': f'Key contains invalid characters: {", ".join(invalid_chars)}',
+            'error': f'Key contains invalid characters: {invalid_chars}',
             'invalid_chars': invalid_chars
         }), 400
     
@@ -70,13 +74,11 @@ def encrypt():
     return jsonify({
         'encrypted_message': encrypted_msg,
         'original_length': len(message),
-        'key_length': len(key),
-        'process_time': str(datetime.now() - start_time)
+        'key_length': len(key)
     })
 
 @app.route('/decrypt', methods=['POST'])
 def decrypt():
-    start_time = datetime.now()
     data = request.get_json()
     encrypted_message = data.get('message', '')
     key = data.get('key', '')
@@ -84,12 +86,11 @@ def decrypt():
     if not encrypted_message or not key:
         return jsonify({'error': 'Encrypted message and key cannot be empty'}), 400
     
-    # Check for invalid key characters
-    ascii_chars = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    # Validate key characters
     invalid_chars = [c for c in key if c not in ascii_chars]
     if invalid_chars:
         return jsonify({
-            'error': f'Key contains invalid characters: {", ".join(invalid_chars)}',
+            'error': f'Key contains invalid characters: {invalid_chars}',
             'invalid_chars': invalid_chars
         }), 400
     
@@ -98,8 +99,7 @@ def decrypt():
     return jsonify({
         'decrypted_message': decrypted_msg,
         'original_length': len(encrypted_message),
-        'key_length': len(key),
-        'process_time': str(datetime.now() - start_time)
+        'key_length': len(key)
     })
 
 if __name__ == '__main__':
