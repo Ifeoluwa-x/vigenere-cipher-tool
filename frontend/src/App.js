@@ -95,7 +95,7 @@ const VigenereCipher = () => {
           <div className="dot dot-yellow"></div>
           <div className="dot dot-green"></div>
         </div>
-        <div>VIGENÈRE TERMINAL v3.56.31</div>
+        <div>VIGENÈRE TERMINAL v3.56.0</div>
         <div className="terminal-dots" style={{ visibility: 'hidden' }}>
           <div className="dot"></div>
           <div className="dot"></div>
